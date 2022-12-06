@@ -1,11 +1,11 @@
-import { Avatar, Button, Container, Grid, TextField, Box } from '@mui/material';
+import { Avatar, Button, Container, Grid, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import { useContext } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Context } from '../index';
 import Loader from './Loader';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 export const Chat = () => {
   const { auth, db } = useContext(Context);
@@ -13,16 +13,18 @@ export const Chat = () => {
   const [valueInput, setValue] = useState('');
   const [values, loading] = useCollectionData(collection(getFirestore(), 'messages'), {
     snapshotListenOptions: { includeMetadataChanges: true },
+    orderBy: 'createdAt',
   });
-  // console.log(values, 'Ya tut');
+  console.log(values, 'Ya tut');
   const sendMessage = async () => {
     try {
+      // eslint-disable-next-line no-unused-vars
       const docRef = await addDoc(collection(db, 'messages'), {
         uid: user.uid,
         displayName: user.displayName,
         photoURL: user.photoURL,
         text: valueInput,
-        createdAt: new Date(),
+        createdAt: serverTimestamp(),
       });
     } catch (e) {
       console.error('Error adding document: ', e);
@@ -36,14 +38,24 @@ export const Chat = () => {
   return (
     <Container>
       <Grid container style={{ height: window.innerHeight - 50, marginTop: 20 }} justify={'center'}>
-        <div style={{ width: '80%', height: '60hv', border: '1px solid green', overflowY: 'auto' }}>
+        <div style={{ width: '80%', height: '60vh', border: '1px solid gray', overflowY: 'auto' }}>
           {values.map((doc) => (
-            <Grid container key={doc.createdAt}>
-              <Avatar src={doc.photoURL} />
-              <Box component="div" sx={{ display: 'inline' }}>
-                автор {doc.displayName} сообщение {doc.text}
-              </Box>
-            </Grid>
+            <div
+              key={doc.createdAt}
+              style={{
+                margin: 10,
+                border: user.uid === doc.uid ? '2px solid green' : '2px dashed red',
+                marginLeft: user.uid === doc.uid ? 'auto' : '10px',
+                width: 'fit-content',
+                padding: 5,
+              }}
+            >
+              <Grid container>
+                <Avatar src={doc.photoURL} />
+                <div>{doc.displayName}</div>
+              </Grid>
+              <div>{doc.text}</div>
+            </div>
           ))}
         </div>
 
