@@ -24,7 +24,7 @@ function App() {
         {user ? (
           <>
             <Route key={'/chat'} path="/chat" element={<Chat />} />
-            <Route path="/login" element={<Navigate replace to="/chat" />} />
+            <Route path="/login" element={<Navigate replace={true} to="/chat" />} />
           </>
         ) : (
           <>
