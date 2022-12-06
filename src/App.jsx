@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Chat } from './components/Chat';
@@ -24,12 +24,12 @@ function App() {
         {user ? (
           <>
             <Route key={'/chat'} path="/chat" element={<Chat />} />
-            {/* <>{navigate('/chat')}</> */}
+            <Route path="/login" element={<Navigate replace to="/chat" />} />
           </>
         ) : (
           <>
             <Route key={'/login'} path="/login" element={<Login />} />
-            {/* <>{navigate('/login')}</> */}
+            <Route path="/" element={<Navigate replace to="/login" />} />
           </>
         )}
       </Routes>

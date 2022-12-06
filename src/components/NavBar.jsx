@@ -18,9 +18,14 @@ export const NavBar = () => {
         <Toolbar>
           <Grid container justify={'flex-end'}>
             {user ? (
-              <Button onClick={() => auth.signOut()} variant={'outlined'}>
-                Выйти
-              </Button>
+              <>
+                <Button onClick={() => auth.signOut()} variant={'outlined'}>
+                  Выйти
+                </Button>
+                <NavLink to="/chat" style={{ margin: 10 }}>
+                  Войти в чат
+                </NavLink>
+              </>
             ) : (
               <NavLink to={LOGIN_ROUTE}>
                 <Button variant={'outlined'}>Войти</Button>
